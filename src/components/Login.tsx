@@ -1,18 +1,61 @@
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 
-const initialState = {}
+interface AuthReducer {
+    validando: boolean;
+    token: string | null;
+    username: string;
+    nombre: string;
+}
+
+const initialState: AuthReducer = {
+    validando: true,
+    token: null,
+    username: "",
+    nombre: ""
+}
+
+type AuthAction = { type: 'logout' };
+
+const authReducer = ( state: AuthReducer, action: AuthAction ): AuthReducer => {
+
+    switch ( action.type ) {
+        case 'logout':
+            return {
+                validando: false,
+                token: null,
+                username: "",
+                nombre: ""
+            }
+        default:
+            return state;
+    }
+    
+}
 
 const Login = () => {
 
-    const [state, dispatch] = useReducer(reducer, initialState);
+    const [{ validando }, dispatch] = useReducer(authReducer, initialState);
+
+    useEffect( () => {
+        setTimeout( () => {
+            dispatch({ type: 'logout' });
+        }, 1500)
+    }, []);
+
+    if ( validando ) {
+        return (
+            <>
+                <h3>Login</h3>
+                <div className="alert alert-info">
+                    Validando...
+                </div>
+            </>
+        )
+    }
 
     return (
         <>
             <h3>Login</h3>
-
-            <div className="alert alert-info">
-                Validando...
-            </div>
 
             <div className="alert alert-danger">
                 No Autenticado...
