@@ -5,24 +5,35 @@ import { ReqResListado, Usuario } from '../interfaces/reqRes';
 const Usuarios = () => {
 
     const [ usuario, setUsuario ] = useState<Usuario[]>([]);
+    const [ page_actual, setPageActual ] = useState(1);
 
     useEffect(() => {
 
         // Llamado al API
-        reqResApi.get<ReqResListado>('/users')
+        reqResApi.get<ReqResListado>(`/users?page=${page_actual}`)
             .then( resp => {
-                setUsuario( resp.data.data )
+                setUsuario( resp.data.data );
+                setPageActual( resp.data.page );
             })
             .catch( console.log )
 
-    }, []);
+    }, [page_actual]);
 
-    const renderItem = (usuario: Usuario) => {
+    const renderItem = ( { id, first_name, last_name, email, avatar }: Usuario) => {
         return (
-            <tr>
-                <td>Avatar</td>
-                <td>Nombre</td>
-                <td>Email</td>
+            <tr key={ id.toString() }>
+                <td>
+                    <img 
+                        src={ avatar } 
+                        alt={ first_name } 
+                        style={{
+                            width: 35,
+                            borderRadius: 100
+                        }}
+                    />
+                </td>
+                <td>{ first_name }{ last_name }</td>
+                <td>{ email }</td>
             </tr>
         )
     }
@@ -43,6 +54,15 @@ const Usuarios = () => {
                     { usuario.map( renderItem )}
                 </tbody>
             </table>
+
+            <button
+                className='btn btn-primary'
+                onClick={ () => {
+                    setPageActual( page_actual + 1 );
+                }}
+            >
+                Siguiente
+            </button>
         </>
     )
 }
