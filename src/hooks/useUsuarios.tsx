@@ -21,10 +21,13 @@ const useUsuarios = () => {
             }
         })
 
+        console.log(resp.data);
+
         if ( resp.data.data.length !== 0 ) {
             setUsuarios( resp.data.data );
         } else {
             alert('No hay mas registros');
+            paginaRef.current --;
         }
 
     }
